@@ -1,0 +1,28 @@
+@import url('./main-layout.css');
+@import url('./views/analyse-view.css');
+
+.orange {
+    color: hsla(39, 100%, 50%, 1);
+    background-color: hsla(39, 100%, 50%, 0.13);
+}
+
+.red {
+    color: hsla(0, 100%, 50%, 1);
+    background-color: hsla(0, 100%, 50%, 0.13);
+}
+
+.black_text {
+    color: black;
+}
+
+.red_text {
+    color: red;
+}
+
+.orange_text {
+    color: orange;
+}
+
+.green_text {
+    color: green;
+}
