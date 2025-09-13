@@ -1,8 +1,8 @@
 package com.github.militalex.messaging;
 
-import com.github.militalex.microservice.AlgorithmState;
-import com.github.militalex.microservice.util.AlgorithmResult;
-import com.github.militalex.microservice.util.OptionalEquipment;
+import com.github.militalex.module.AlgorithmState;
+import com.github.militalex.module.util.AlgorithmResult;
+import com.github.militalex.module.util.OptionalEquipment;
 import com.github.militalex.messaging.util.NullableInteger;
 import com.github.militalex.messaging.util.Pair;
 import org.apache.kafka.clients.producer.ProducerConfig;

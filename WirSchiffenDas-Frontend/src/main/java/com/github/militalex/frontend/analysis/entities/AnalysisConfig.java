@@ -1,6 +1,6 @@
 package com.github.militalex.frontend.analysis.entities;
 
-import com.github.militalex.microservice.util.OptionalEquipment;
+import com.github.militalex.module.util.OptionalEquipment;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

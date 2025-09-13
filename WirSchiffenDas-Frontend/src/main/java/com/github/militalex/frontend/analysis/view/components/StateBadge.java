@@ -1,8 +1,7 @@
 package com.github.militalex.frontend.analysis.view.components;
 
-import com.github.militalex.microservice.AlgorithmState;
+import com.github.militalex.module.AlgorithmState;
 import com.vaadin.flow.component.AbstractCompositeField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Span;
 
 import java.util.List;

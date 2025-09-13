@@ -3,7 +3,7 @@ package com.github.militalex.frontend.analysis.view.components;
 import com.github.militalex.frontend.analysis.AnalysisService;
 import com.github.militalex.frontend.analysis.entities.AnalysisConfig;
 import com.github.militalex.frontend.analysis.entities.AnalysisStates;
-import com.github.militalex.microservice.util.OptionalEquipment;
+import com.github.militalex.module.util.OptionalEquipment;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
