@@ -18,16 +18,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 public abstract class ModulePort {
 
     @Getter
-    protected final Modules microservice;
+    protected final Modules modules;
     protected final ModuleService service;
     private final KafkaCircuitBreaker<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> algorithmStatesCB;
     protected final KafkaCircuitBreaker<Integer, AlgorithmResult> algorithmResultToFrontendCB;
 
-    public ModulePort(Modules microservice, ModuleService service,
+    public ModulePort(Modules modules, ModuleService service,
                       KafkaTemplate<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> stateKafkaTemplate,
                       KafkaTemplate<Integer, AlgorithmResult> resultToFrontendKafkaTemplate
     ) {
-        this.microservice = microservice;
+        this.modules = modules;
         this.service = service;
         service.setPort(this);
 
@@ -42,7 +42,7 @@ public abstract class ModulePort {
             containerFactory = "pingKafkaListenerContainerFactory")
     private void receivePing(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
         System.out.println("Received ping from session " + sessionId);
-        microservice.getOptionalEquipments().forEach(optionalEquipment ->
+        modules.getOptionalEquipments().forEach(optionalEquipment ->
                 sendAlgorithmState(sessionId, optionalEquipment, AlgorithmState.READY)
         );
     }
@@ -55,10 +55,9 @@ public abstract class ModulePort {
     private void receiveAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
         OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
 
-        if (microservice.getOptionalEquipments().contains(optionalEquipment)){
+        if (modules.getOptionalEquipments().contains(optionalEquipment)){
             String entry = emptyAlgoResult.getEntry();
             emptyAlgoResult.setEntry(entry); // Ensure entry is set in the cached result.
-            cacheSession(sessionId, emptyAlgoResult);
 
             System.out.println("Received analysis request for " + optionalEquipment + " with entry \"" + entry + "\" from session " + sessionId);
             service.startAnalysis(sessionId, optionalEquipment, entry);

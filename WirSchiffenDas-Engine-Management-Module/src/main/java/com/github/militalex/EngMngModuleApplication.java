@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
         DataSourceAutoConfiguration.class,
         HibernateJpaAutoConfiguration.class
 })
-public class EngineMngModuleApplication {
+public class EngMngModuleApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EngineMngModuleApplication.class, args);
+        SpringApplication.run(EngMngModuleApplication.class, args);
     }
 
 }

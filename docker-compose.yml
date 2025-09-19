@@ -34,8 +34,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
   starting-monitoring-microservice:
     build: WirSchiffenDas-Starting-Monitoring-Microservice
-    ports:
-      - "8081:8081"
     container_name: starting-monitoring-microservice
     depends_on:
       - kafka-broker
@@ -43,8 +41,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
   mounting-microservice:
     build: WirSchiffenDas-Mounting-Microservice
-    ports:
-      - "8082:8082"
     container_name: mounting-microservice
     depends_on:
       - kafka-broker
@@ -52,8 +48,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
   fuel-microservice:
     build: WirSchiffenDas-Fuel-Microservice
-    ports:
-      - "8083:8083"
     container_name: fuel-microservice
     depends_on:
       - kafka-broker
@@ -61,8 +55,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
   cooling-microservice:
     build: WirSchiffenDas-Cooling-Microservice
-    ports:
-      - "8084:8084"
     container_name: cooling-microservice
     depends_on:
       - kafka-broker
@@ -70,8 +62,6 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
   engine-mng-microservice:
     build: WirSchiffenDas-Engine-Management-Microservice
-    ports:
-      - "8085:8085"
     container_name: engine-mng-microservice
     depends_on:
       - kafka-broker

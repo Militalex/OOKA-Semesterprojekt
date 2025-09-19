@@ -1,7 +1,6 @@
 package com.github.militalex.module.enginemng;
 
 import com.github.militalex.messaging.util.NullableInteger;
-import com.github.militalex.module.AlgorithmState;
 import com.github.militalex.module.ModuleService;
 import com.github.militalex.module.Modules;
 import com.github.militalex.module.util.OptionalEquipment;
@@ -16,20 +15,19 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class EngineMngModuleService extends ModuleService {
+public class EngMngModuleService extends ModuleService {
 
     private static final Random RANDOM = new Random();
 
     @Setter
-    private EngineMngModulePort subPort;
+    private EngMngModulePort subPort;
 
-    public EngineMngModuleService() {
+    public EngMngModuleService() {
         super(Modules.ENGINE_MANAGEMENT);
     }
 
     @Override
     public void startAnalysis(int sessionId, OptionalEquipment optionalEquipment, String entry) {
-        this.port.sendAlgorithmState(sessionId, optionalEquipment, AlgorithmState.RUNNING);
         subPort.requestResults(sessionId);
 
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
