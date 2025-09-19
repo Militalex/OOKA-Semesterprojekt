@@ -49,7 +49,7 @@ public abstract class ModulePortWithEngMng extends ModulePort {
     private void receiveAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
         OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
 
-        if (modules.getOptionalEquipments().contains(optionalEquipment)
+        if (module.getOptionalEquipments().contains(optionalEquipment)
                 && !Optional.ofNullable(cachedSessionsFromFrontend.get(sessionId)).orElse(Collections.emptyList()).contains(optionalEquipment)){
             receivedAnalysisRequest(sessionId, emptyAlgoResult, true);
         }
@@ -74,7 +74,7 @@ public abstract class ModulePortWithEngMng extends ModulePort {
             partitions = "" + KafkaTopicConfig.EngMngPartitions.REQUEST_RESULT),
             containerFactory = "engMngRequestAnalysisKafkaListenerContainerFactory")
     private void receiveAnalysisRequestFromEngMng(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
-        modules.getOptionalEquipments().stream()
+        module.getOptionalEquipments().stream()
                 .filter(oe -> !resultCache.isPresent(oe))
                 .forEach(oe -> receivedAnalysisRequest(sessionId, new AlgorithmResult(sessionId, oe, "Not yet set"), false)
         );
@@ -82,9 +82,9 @@ public abstract class ModulePortWithEngMng extends ModulePort {
         CompletableFuture<Void> futureResult = CompletableFuture.runAsync(() -> {
             int maxSeconds = 30;
             for (int i = 0; i < maxSeconds; i++){
-                if (modules.getOptionalEquipments().stream()
+                if (module.getOptionalEquipments().stream()
                         .allMatch(optionalEquipment -> resultCache.isResultPresent(sessionId, optionalEquipment))){
-                    modules.getOptionalEquipments().forEach(optionalEquipment -> {
+                    module.getOptionalEquipments().forEach(optionalEquipment -> {
                         AlgorithmResult algorithmResult = resultCache.takeResult(sessionId, optionalEquipment);
                         System.out.println("Sending result " + algorithmResult + " for " + optionalEquipment + " to EngMng for session " + sessionId);
                         algorithmResultToEngMngCB.call(sessionId, algorithmResult);
@@ -104,7 +104,7 @@ public abstract class ModulePortWithEngMng extends ModulePort {
         futureResult.whenComplete((unused, throwable) -> {
             if (throwable != null) {
                 System.err.println("Error while waiting for all results to be ready for session " + sessionId + ": " + throwable.getMessage());
-                modules.getOptionalEquipments().forEach(optionalEquipment -> {
+                module.getOptionalEquipments().forEach(optionalEquipment -> {
                     System.out.println("Sending result " + null + " for " + optionalEquipment + " to EngMng for session " + sessionId);
                     algorithmResultToEngMngCB.call(sessionId, new AlgorithmResult(sessionId, optionalEquipment, "Error"));
                 });

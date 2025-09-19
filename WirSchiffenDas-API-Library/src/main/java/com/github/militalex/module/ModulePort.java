@@ -18,16 +18,16 @@ import org.springframework.messaging.handler.annotation.Payload;
 public abstract class ModulePort {
 
     @Getter
-    protected final Modules modules;
+    protected final Modules module;
     protected final ModuleService service;
     private final KafkaCircuitBreaker<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> algorithmStatesCB;
     protected final KafkaCircuitBreaker<Integer, AlgorithmResult> algorithmResultToFrontendCB;
 
-    public ModulePort(Modules modules, ModuleService service,
+    public ModulePort(Modules module, ModuleService service,
                       KafkaTemplate<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> stateKafkaTemplate,
                       KafkaTemplate<Integer, AlgorithmResult> resultToFrontendKafkaTemplate
     ) {
-        this.modules = modules;
+        this.module = module;
         this.service = service;
         service.setPort(this);
 
@@ -42,7 +42,7 @@ public abstract class ModulePort {
             containerFactory = "pingKafkaListenerContainerFactory")
     private void receivePing(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
         System.out.println("Received ping from session " + sessionId);
-        modules.getOptionalEquipments().forEach(optionalEquipment ->
+        module.getOptionalEquipments().forEach(optionalEquipment ->
                 sendAlgorithmState(sessionId, optionalEquipment, AlgorithmState.READY)
         );
     }
@@ -55,7 +55,7 @@ public abstract class ModulePort {
     private void receiveAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
         OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
 
-        if (modules.getOptionalEquipments().contains(optionalEquipment)){
+        if (module.getOptionalEquipments().contains(optionalEquipment)){
             String entry = emptyAlgoResult.getEntry();
             emptyAlgoResult.setEntry(entry); // Ensure entry is set in the cached result.
 
