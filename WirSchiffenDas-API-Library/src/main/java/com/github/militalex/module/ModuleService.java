@@ -9,24 +9,24 @@ import org.springframework.context.event.EventListener;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class ModuleService {
-    protected final Modules microservice;
+    protected final Modules module;
 
     @Setter
     protected ModulePort port;
 
-    public ModuleService(Modules microservice) {
-        this.microservice = microservice;
+    public ModuleService(Modules module) {
+        this.module = module;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void onContextOpened() {
-        microservice.getOptionalEquipments().forEach(optionalEquipment ->
+        module.getOptionalEquipments().forEach(optionalEquipment ->
                 port.sendAlgorithmState(null, optionalEquipment, AlgorithmState.READY));
     }
 
     @EventListener(ContextClosedEvent.class)
     public void onContextClosed(){
-        microservice.getOptionalEquipments().forEach(optionalEquipment ->
+        module.getOptionalEquipments().forEach(optionalEquipment ->
                 port.sendAlgorithmState(null, optionalEquipment, AlgorithmState.OFFLINE));
     }
 

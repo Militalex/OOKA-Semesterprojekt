@@ -1,9 +1,11 @@
 package com.github.militalex.frontend.analysis.view.components;
 
 import com.vaadin.flow.component.icon.Icon;
+import lombok.Getter;
 
 public class ResultBadge extends Icon {
 
+    @Getter
     private ResultState state;
 
     public ResultBadge() {
@@ -13,22 +15,6 @@ public class ResultBadge extends Icon {
 
     public ResultBadge(ResultState initialState) {
         setState(initialState);
-    }
-
-    public void setNoResult() {
-        setState(ResultState.NO_RESULT);
-    }
-
-    public void setPassed() {
-        setState(ResultState.PASSED);
-    }
-
-    public void setFailed() {
-        setState(ResultState.FAILED);
-    }
-
-    public void setPartialPass() {
-        setState(ResultState.PARTIAL_PASSED);
     }
 
     public void setState(ResultState state) {
