@@ -40,7 +40,7 @@ public abstract class ModulePort {
     @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.FRONTEND_TOPIC,
             partitions = "" + KafkaTopicConfig.FrontendPartitions.PING),
             containerFactory = "pingKafkaListenerContainerFactory")
-    private void receivePing(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
+    private void receivedPing(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
         System.out.println("Received ping from session " + sessionId);
         module.getOptionalEquipments().forEach(optionalEquipment ->
                 sendAlgorithmState(sessionId, optionalEquipment, AlgorithmState.READY)
@@ -52,7 +52,7 @@ public abstract class ModulePort {
     @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.FRONTEND_TOPIC,
             partitions = "" + KafkaTopicConfig.FrontendPartitions.REQUEST_ANALYSIS),
             containerFactory = "receiveAnalysisRequestKafkaListenerContainerFactory")
-    private void receiveAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
+    protected void receivedAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
         OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
 
         if (module.getOptionalEquipments().contains(optionalEquipment)){
