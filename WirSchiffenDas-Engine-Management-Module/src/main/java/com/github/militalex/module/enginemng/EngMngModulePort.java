@@ -22,16 +22,16 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 
 @Service
-public class EngineMngModulePort extends ModulePort {
+public class EngMngModulePort extends ModulePort {
 
     private final HashMap<Integer, ResultsPackage> sessionResultsMap = new HashMap<>();
 
     protected final KafkaCircuitBreaker<Integer, String> requestResultCB;
 
-    public EngineMngModulePort(EngineMngModuleService service,
-                               KafkaTemplate<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> stateKafkaTemplate,
-                               @Qualifier("kafkaFrontendAlgoResultsTemplate") KafkaTemplate<Integer, AlgorithmResult> resultToFrontendKafkaTemplate,
-                               @Qualifier("kafkaEngMngRequestAnalysisTemplate") KafkaTemplate<Integer, String> requestResultKafkaTemplate
+    public EngMngModulePort(EngMngModuleService service,
+                            KafkaTemplate<NullableInteger, Pair<OptionalEquipment, AlgorithmState>> stateKafkaTemplate,
+                            @Qualifier("kafkaFrontendAlgoResultsTemplate") KafkaTemplate<Integer, AlgorithmResult> resultToFrontendKafkaTemplate,
+                            @Qualifier("kafkaEngMngRequestAnalysisTemplate") KafkaTemplate<Integer, String> requestResultKafkaTemplate
     ) {
         super(Modules.ENGINE_MANAGEMENT, service, stateKafkaTemplate, resultToFrontendKafkaTemplate);
         service.setSubPort(this);

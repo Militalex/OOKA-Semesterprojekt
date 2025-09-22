@@ -16,14 +16,14 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class EngineMngModuleService extends ModuleService {
+public class EngMngModuleService extends ModuleService {
 
     private static final Random RANDOM = new Random();
 
     @Setter
-    private EngineMngModulePort subPort;
+    private EngMngModulePort subPort;
 
-    public EngineMngModuleService() {
+    public EngMngModuleService() {
         super(Modules.ENGINE_MANAGEMENT);
     }
 
