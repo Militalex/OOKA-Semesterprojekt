@@ -32,7 +32,7 @@ public abstract class ModulePortWithEngMng extends ModulePort {
                                 KafkaTemplate<Integer, AlgorithmResult> resultToEngMngKafkaTemplate) {
         super(microservice, service, stateKafkaTemplate, resultToFrontendKafkaTemplate);
         algorithmResultToEngMngCB = new KafkaCircuitBreaker<>(pair ->
-                resultToEngMngKafkaTemplate.send(KafkaTopicConfig.ENG_MNG_MICROSERVICE_TOPIC, KafkaTopicConfig.EngMngPartitions.ALGORITHM_RESULTS, pair.getFirst(), pair.getSecond()));
+                resultToEngMngKafkaTemplate.send(KafkaTopicConfig.ENG_MNG_TOPIC, KafkaTopicConfig.EngMngPartitions.ALGORITHM_RESULTS, pair.getFirst(), pair.getSecond()));
     }
 
     @Override
@@ -43,10 +43,11 @@ public abstract class ModulePortWithEngMng extends ModulePort {
         resultCache.cacheSession(sessionId, emptyAlgoResult);
     }
 
+    @Override
     @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.FRONTEND_TOPIC,
             partitions = "" + KafkaTopicConfig.FrontendPartitions.REQUEST_ANALYSIS),
             containerFactory = "receiveAnalysisRequestKafkaListenerContainerFactory")
-    private void receiveAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
+    protected void receivedAnalysisRequestFromFrontend(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult emptyAlgoResult){
         OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
 
         if (module.getOptionalEquipments().contains(optionalEquipment)
@@ -55,25 +56,10 @@ public abstract class ModulePortWithEngMng extends ModulePort {
         }
     }
 
-    protected void receivedAnalysisRequest(int sessionId, AlgorithmResult emptyAlgoResult, boolean frontend){
-        OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
-
-        if (frontend) {
-            cachedSessionsFromFrontend.add(sessionId, optionalEquipment);
-        }
-
-        String entry = emptyAlgoResult.getEntry();
-        emptyAlgoResult.setEntry(entry); // Ensure entry is set in the cached result.
-        cacheSession(sessionId, emptyAlgoResult);
-
-        System.out.println("Received analysis request for " + optionalEquipment + " with entry \"" + entry + "\" from session " + sessionId);
-        service.startAnalysis(sessionId, optionalEquipment, entry);
-    }
-
-    @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.ENG_MNG_MICROSERVICE_TOPIC,
+    @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.ENG_MNG_TOPIC,
             partitions = "" + KafkaTopicConfig.EngMngPartitions.REQUEST_RESULT),
             containerFactory = "engMngRequestAnalysisKafkaListenerContainerFactory")
-    private void receiveAnalysisRequestFromEngMng(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
+    private void receivedAnalysisRequestFromEngMng(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId){
         module.getOptionalEquipments().stream()
                 .filter(oe -> !resultCache.isPresent(oe))
                 .forEach(oe -> receivedAnalysisRequest(sessionId, new AlgorithmResult(sessionId, oe, "Not yet set"), false)
@@ -110,6 +96,21 @@ public abstract class ModulePortWithEngMng extends ModulePort {
                 });
             }
         });
+    }
+
+    protected void receivedAnalysisRequest(int sessionId, AlgorithmResult emptyAlgoResult, boolean frontend){
+        OptionalEquipment optionalEquipment = emptyAlgoResult.getOptionalEquipment();
+
+        if (frontend) {
+            cachedSessionsFromFrontend.add(sessionId, optionalEquipment);
+        }
+
+        String entry = emptyAlgoResult.getEntry();
+        emptyAlgoResult.setEntry(entry); // Ensure entry is set in the cached result.
+        cacheSession(sessionId, emptyAlgoResult);
+
+        System.out.println("Received analysis request for " + optionalEquipment + " with entry \"" + entry + "\" from session " + sessionId);
+        service.startAnalysis(sessionId, optionalEquipment, entry);
     }
 
     @Override

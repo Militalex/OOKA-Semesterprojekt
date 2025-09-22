@@ -14,7 +14,7 @@ import lombok.Getter;
 import java.util.Arrays;
 
 public class AnalysisSession {
-    public static int idCounter = 0;
+    private static int idCounter = 0;
     @Getter
     private final int sessionId;
     private final AnalysisService service;

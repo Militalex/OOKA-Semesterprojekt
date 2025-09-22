@@ -1,7 +1,6 @@
 package com.github.militalex.module.enginemng;
 
 import com.github.militalex.messaging.util.NullableInteger;
-import com.github.militalex.module.AlgorithmState;
 import com.github.militalex.module.ModuleService;
 import com.github.militalex.module.Modules;
 import com.github.militalex.module.util.OptionalEquipment;
@@ -29,7 +28,6 @@ public class EngMngModuleService extends ModuleService {
 
     @Override
     public void startAnalysis(int sessionId, OptionalEquipment optionalEquipment, String entry) {
-        this.port.sendAlgorithmState(sessionId, optionalEquipment, AlgorithmState.RUNNING);
         subPort.requestResults(sessionId);
 
         CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {

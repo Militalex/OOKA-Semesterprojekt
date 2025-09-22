@@ -16,7 +16,7 @@ public class KafkaTopicConfig {
      * All Kafka Topics
      */
     public static final String FRONTEND_TOPIC = "frontend";
-    public static final String ENG_MNG_MICROSERVICE_TOPIC = "engMngMicroservice";
+    public static final String ENG_MNG_TOPIC = "engMngModule";
 
     /**
      * All Kafka Partitions for the FRONTEND topic.
@@ -56,6 +56,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic microserviceChoreoTopic() {
-        return new NewTopic(ENG_MNG_MICROSERVICE_TOPIC, EngMngPartitions.PARTITION_COUNT, (short) 1);
+        return new NewTopic(ENG_MNG_TOPIC, EngMngPartitions.PARTITION_COUNT, (short) 1);
     }
 }

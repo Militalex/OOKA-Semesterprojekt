@@ -62,7 +62,7 @@ public class EngMngModulePort extends ModulePort {
     @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.ENG_MNG_MICROSERVICE_TOPIC,
             partitions = "" + KafkaTopicConfig.EngMngPartitions.ALGORITHM_RESULTS),
             containerFactory = "engMngAlgoResultKafkaListenerContainerFactory")
-    private void receiveAlgorithmResult(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult algorithmResult){
+    private void receivedAlgorithmResult(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult algorithmResult){
         System.out.println("Received result " + algorithmResult + " for " + algorithmResult.getOptionalEquipment() + " for session " + sessionId);
         sessionResultsMap.get(sessionId).setResult(algorithmResult);
     }
