@@ -37,7 +37,7 @@ public class EngMngModulePort extends ModulePort {
         service.setSubPort(this);
 
         requestResultCB = new KafkaCircuitBreaker<>(pair ->
-                requestResultKafkaTemplate.send(KafkaTopicConfig.ENG_MNG_MICROSERVICE_TOPIC, KafkaTopicConfig.EngMngPartitions.REQUEST_RESULT, pair.getFirst(), pair.getSecond()));
+                requestResultKafkaTemplate.send(KafkaTopicConfig.ENG_MNG_TOPIC, KafkaTopicConfig.EngMngPartitions.REQUEST_RESULT, pair.getFirst(), pair.getSecond()));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class EngMngModulePort extends ModulePort {
         requestResultCB.call(sessionId, "RequestResult");
     }
 
-    @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.ENG_MNG_MICROSERVICE_TOPIC,
+    @KafkaListener(topicPartitions = @TopicPartition(topic = KafkaTopicConfig.ENG_MNG_TOPIC,
             partitions = "" + KafkaTopicConfig.EngMngPartitions.ALGORITHM_RESULTS),
             containerFactory = "engMngAlgoResultKafkaListenerContainerFactory")
     private void receivedAlgorithmResult(@Header(KafkaHeaders.RECEIVED_KEY) int sessionId, @Payload AlgorithmResult algorithmResult){
